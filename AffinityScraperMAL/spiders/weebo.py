@@ -126,6 +126,16 @@ class MAL_spider(scrapy.Spider):
         color = 'rgb(47,82,162)' # black color
         draw.text((x, y), message, fill=color, font=font)
 
+        (x, y) = (50, 150)
+        message = "Anime Friends"
+        color = 'rgb(47,82,162)' # black color
+        draw.text((x, y), message, fill=color, font=font)
+
+        (x, y) = (550, 150)
+        message = "Manga Friends"
+        color = 'rgb(47,82,162)' # black color
+        draw.text((x, y), message, fill=color, font=font)
+
         (x, y) = (50, 850)
         lasttime = "last updated : " + dt_string
         color = 'rgb(177,116,104)'
@@ -139,17 +149,17 @@ class MAL_spider(scrapy.Spider):
 
         color = 'rgb(159, 99, 63)' # white color
         for i in range(0,10):
-            (x, y) = (50, 150)
+            (x, y) = (50, 200)
             y=y+(i*50)
             draw.text((x, y), names[i], fill=color, font=font)
-            (x, y) = (350, 150)
+            (x, y) = (350, 200)
             y=y+(i*50)
             draw.text((x, y), vars[i], fill=color, font=font)
 
-            (x, y) = (525, 150)
+            (x, y) = (550, 200)
             y=y+(i*50)
             draw.text((x, y), varsmanga[i], fill=color, font=font)
-            (x, y) = (750, 150)
+            (x, y) = (750, 200)
             y=y+(i*50)
             draw.text((x, y), namesmanga[i], fill=color, font=font)
 
