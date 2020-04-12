@@ -122,7 +122,7 @@ class MAL_spider(scrapy.Spider):
         updatefont = ImageFont.truetype('Roboto-Bold.ttf', size=30)
         # starting position of the message
         (x, y) = (50, 50)
-        message = "TOP 10 MyAnimeList Friends"
+        message = "TOP 20 MyAnimeList Friends"
         color = 'rgb(47,82,162)' # black color
         draw.text((x, y), message, fill=color, font=font)
 
