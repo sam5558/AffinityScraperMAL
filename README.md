@@ -4,6 +4,8 @@ Then it outputs the ranking as a png image.
 
 This script comes as a replacement of [MALAffinity-Generator-IMG](https://github.com/sam5558/MALAffinity-Generator-IMG)
 
+![Example](top-20-friends.png)
+
 # Benefits of this new script compared to my old one
 * Old one used to download each user's animelist, then calculates the affinity with me, then get top 10 users... which took a lot of time (the more firends you have the more time if takes)
 * The new script uses scraping with the use of username/password, which made me get my list of users 5 or 6 times quicker.
