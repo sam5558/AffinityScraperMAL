@@ -40,6 +40,3 @@ Finally Execute :
 `scrapy crawl weebo`
 
 Get yourself a cup of coffee and wait the magic.
-
-PS: The more 
-
