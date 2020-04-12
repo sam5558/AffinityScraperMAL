@@ -1,7 +1,9 @@
 #coding=utf-8
+import os
 import time
 import scrapy
-import spiderman.spiders.config
+import AffinityScraperMAL.spiders.config
+import AffinityScraperMAL.spiders.credentials
 from scrapy.http import FormRequest
 from scrapy.http.request import Request
 from jikanpy import Jikan
@@ -27,8 +29,8 @@ dt_string = now.strftime("%d/%m/%Y %H:%M")
 jikan = Jikan()
 
 # friends get data
-ufriends = jikan.user(username=spiderman.spiders.config.user_name, request='friends')
-ufriends2 = jikan.user(username=spiderman.spiders.config.user_name, request='friends', argument=2)
+ufriends = jikan.user(username=AffinityScraperMAL.spiders.credentials.user_name, request='friends')
+ufriends2 = jikan.user(username=AffinityScraperMAL.spiders.credentials.user_name, request='friends', argument=2)
 # merge all users
 for i in range(len(ufriends['friends'])):
   userlist.append(ufriends['friends'][int(i)])
@@ -46,8 +48,8 @@ class MAL_spider(scrapy.Spider):
     mal_login_url = 'https://myanimelist.net/login.php'
     start_urls = [mal_login_url]
 
-    user_name = spiderman.spiders.config.user_name
-    password = spiderman.spiders.config.password
+    user_name = AffinityScraperMAL.spiders.credentials.user_name
+    password = AffinityScraperMAL.spiders.credentials.password
 
     token = None
 
@@ -102,11 +104,9 @@ class MAL_spider(scrapy.Spider):
             topaff = list(sortedaff.items())[:10]
             topaffmanga = list(sortedaffmanga.items())[:10]
             f = open('config.py','w+')
-            f.write("username = %s\npassword = %s\nrankedaff = %s\nrankedaffmanga = %s" % (username,password,topaff,topaffmanga))
+            f.write("rankedaff = %s\nrankedaffmanga = %s" % (topaff,topaffmanga))
             self.generateimg()
-            #globals()[myaffinity] = topaff
-        #else:
-            #print('pending...')
+
         time.sleep(2)
 
     def gitsync(self):
@@ -132,10 +132,10 @@ class MAL_spider(scrapy.Spider):
         draw.text((x, y), lasttime, fill=color, font=updatefont)
 
         for i in range(0,10):
-            names.append(''.join([v for v in spiderman.spiders.config.rankedaff[i][0]]))
-            namesmanga.append(''.join([v for v in spiderman.spiders.config.rankedaffmanga[i][0]]))
-            vars.append(''.join([v for v in spiderman.spiders.config.rankedaff[i][1]])+"%")
-            varsmanga.append(''.join([v for v in spiderman.spiders.config.rankedaffmanga[i][1]])+"%")
+            names.append(''.join([v for v in AffinityScraperMAL.spiders.config.rankedaff[i][0]]))
+            namesmanga.append(''.join([v for v in AffinityScraperMAL.spiders.config.rankedaffmanga[i][0]]))
+            vars.append(''.join([v for v in AffinityScraperMAL.spiders.config.rankedaff[i][1]])+"%")
+            varsmanga.append(''.join([v for v in AffinityScraperMAL.spiders.config.rankedaffmanga[i][1]])+"%")
 
         color = 'rgb(159, 99, 63)' # white color
         for i in range(0,10):
@@ -155,3 +155,4 @@ class MAL_spider(scrapy.Spider):
 
         # save the edited image
         image.save('top-10-friends.png')
+        self.gitsync()
