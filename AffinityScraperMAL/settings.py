@@ -14,7 +14,7 @@ BOT_NAME = 'AffinityScraperMAL'
 SPIDER_MODULES = ['AffinityScraperMAL.spiders']
 NEWSPIDER_MODULE = 'AffinityScraperMAL.spiders'
 
-
+LOG_LEVEL = 'INFO'
 # Crawl responsibly by identifying yourself (and your website) on the user-agent
 #USER_AGENT = 'AffinityScraperMAL (+http://www.yourdomain.com)'
 
