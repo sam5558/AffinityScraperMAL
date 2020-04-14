@@ -105,6 +105,7 @@ class MAL_spider(scrapy.Spider):
             topaffmanga = list(sortedaffmanga.items())[:10]
             f = open('config.py','w+')
             f.write("rankedaff = %s\nrankedaffmanga = %s" % (topaff,topaffmanga))
+            f.close()
             self.generateimg()
 
         time.sleep(2)
@@ -166,5 +167,5 @@ class MAL_spider(scrapy.Spider):
             draw.text((x, y), namesmanga[i], fill=color, font=font)
 
         # save the edited image
-        image.save('top-10-friends.png')
+        image.save('top-20-friends.png')
         self.gitsync()
