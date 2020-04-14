@@ -21,7 +21,7 @@ topaff = []
 topaffmanga = []
 names = []
 namesmanga = []
-vars = []
+var = []
 varsmanga = []
 #user_name = 'Guts__'
 now = datetime.now()
@@ -144,8 +144,10 @@ class MAL_spider(scrapy.Spider):
         for i in range(0,10):
             names.append(''.join([v for v in AffinityScraperMAL.spiders.config.rankedaff[i][0]]))
             namesmanga.append(''.join([v for v in AffinityScraperMAL.spiders.config.rankedaffmanga[i][0]]))
-            vars.append(''.join([v for v in AffinityScraperMAL.spiders.config.rankedaff[i][1]])+"%")
+            var.append(''.join([v for v in AffinityScraperMAL.spiders.config.rankedaff[i][1]])+"%")
+            print(var[i])
             varsmanga.append(''.join([v for v in AffinityScraperMAL.spiders.config.rankedaffmanga[i][1]])+"%")
+            print(varsmanga[i])
 
         color = 'rgb(159, 99, 63)' # white color
         for i in range(0,10):
@@ -154,7 +156,7 @@ class MAL_spider(scrapy.Spider):
             draw.text((x, y), names[i], fill=color, font=font)
             (x, y) = (350, 200)
             y=y+(i*50)
-            draw.text((x, y), vars[i], fill=color, font=font)
+            draw.text((x, y), var[i], fill=color, font=font)
 
             (x, y) = (550, 200)
             y=y+(i*50)
