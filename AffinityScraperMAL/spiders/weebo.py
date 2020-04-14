@@ -148,9 +148,7 @@ class MAL_spider(scrapy.Spider):
             names.append(''.join([v for v in AffinityScraperMAL.spiders.config.rankedaff[i][0]]))
             namesmanga.append(''.join([v for v in AffinityScraperMAL.spiders.config.rankedaffmanga[i][0]]))
             var.append(''.join([v for v in AffinityScraperMAL.spiders.config.rankedaff[i][1]])+"%")
-            print(var[i])
             varsmanga.append(''.join([v for v in AffinityScraperMAL.spiders.config.rankedaffmanga[i][1]])+"%")
-            print(varsmanga[i])
 
         color = 'rgb(159, 99, 63)' # white color
         for i in range(0,10):
