@@ -1,6 +1,7 @@
 #coding=utf-8
 import os
 import time
+from importlib import reload
 import scrapy
 import AffinityScraperMAL.spiders.config
 import AffinityScraperMAL.spiders.credentials
@@ -142,6 +143,7 @@ class MAL_spider(scrapy.Spider):
         color = 'rgb(177,116,104)'
         draw.text((x, y), lasttime, fill=color, font=updatefont)
 
+        AffinityScraperMAL.spiders.config = reload(AffinityScraperMAL.spiders.config)
         for i in range(0,10):
             names.append(''.join([v for v in AffinityScraperMAL.spiders.config.rankedaff[i][0]]))
             namesmanga.append(''.join([v for v in AffinityScraperMAL.spiders.config.rankedaffmanga[i][0]]))
