@@ -30,15 +30,19 @@ dt_string = now.strftime("%d/%m/%Y %H:%M")
 jikan = Jikan()
 
 # friends get data
-ufriends = jikan.user(username=AffinityScraperMAL.spiders.credentials.user_name, request='friends')
-ufriends2 = jikan.user(username=AffinityScraperMAL.spiders.credentials.user_name, request='friends', argument=2)
+ufriends = jikan.users(username=AffinityScraperMAL.spiders.credentials.user_name, extension='friends')
+#print(len(ufriends['data']))
+ufriends2 = jikan.users(username=AffinityScraperMAL.spiders.credentials.user_name, extension='friends', page=2)
+#print(len(ufriends2['data']))
 # merge all users
-for i in range(len(ufriends['friends'])):
-  userlist.append(ufriends['friends'][int(i)])
-for i in range(len(ufriends2['friends'])):
-  userlist.append(ufriends2['friends'][int(i)])
+for i in range(len(ufriends['data'])):
+  userlist.append(ufriends['data'][int(i)])
+for i in range(len(ufriends2['data'])):
+  userlist.append(ufriends2['data'][int(i)])
 # create a list of friend names
-friend_names = [f["username"] for f in userlist]
+#print(userlist)
+friend_names = [f["user"]["username"] for f in userlist]
+print(friend_names)
 for i in range(0,len(friend_names)):
     e.append(str('https://myanimelist.net/profile/') + str(friend_names[i]))
 
@@ -46,11 +50,27 @@ for i in range(0,len(friend_names)):
 
 class MAL_spider(scrapy.Spider):
     name = 'weebo'
-    mal_login_url = 'https://myanimelist.net/login.php'
+    mal_login_url = 'https://myanimelist.net/'
     start_urls = [mal_login_url]
 
     user_name = AffinityScraperMAL.spiders.credentials.user_name
     password = AffinityScraperMAL.spiders.credentials.password
+    # custom headers
+    headers = {
+        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
+        'accept-encoding': 'gzip, deflate, br',
+        'accept-language': 'fr-FR,fr;q=0.5',
+        'cache-control': 'no-cache',
+        'cookie': 'reviews_sort=recent; search_view2=list; search_sort_anime=score; search_view=list; m_gdpr_mdl_6=1; MALSESSIONID=sprklh2jv21n78rv5mng39vao1; is_logged_in=1; MALHLOGSESSID=4bc6195b0831ebb8ed582dec33d35600; text_ribbon=%5B6%2C7%2C8%5D; clubcomments=a%3A1%3A%7Bi%3A59197%3Bi%3A1673722378%3B%7D',
+        'pragma': 'no-cache',
+        'sec-fetch-dest': 'document',
+        'sec-fetch-mode': 'navigate',
+        'sec-fetch-site': 'none',
+        'sec-fetch-user': '?1',
+        'sec-gpc': '1',
+        'upgrade-insecure-requests': '1',
+        'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
+    }
 
     token = None
 
@@ -79,6 +99,7 @@ class MAL_spider(scrapy.Spider):
         for i in range(0,len(e)):
             yield Request(
                 url=e[i],
+                headers=self.headers,
                 meta={'Title': friend_names[i]},
                 callback=self.action)
         #yield Request(
