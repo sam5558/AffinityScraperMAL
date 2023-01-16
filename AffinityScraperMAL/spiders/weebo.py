@@ -92,6 +92,7 @@ class MAL_spider(scrapy.Spider):
                             'submit' : '1',
                             'cookie' : '1'
                         },
+                    headers = self.headers,
                     callback = self.after_login
                     )]
 
