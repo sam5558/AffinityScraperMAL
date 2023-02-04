@@ -2,4 +2,4 @@
 *credentials.py
 *output2.log
 __pycache__/
-geckodriver.log
+*geckodriver.log
