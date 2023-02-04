@@ -11,6 +11,11 @@ from jikanpy import Jikan
 from collections import OrderedDict
 from PIL import Image, ImageDraw, ImageFont
 from datetime import datetime
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
 
 # variables
 userlist = []
@@ -40,37 +45,33 @@ for i in range(len(ufriends['data'])):
 for i in range(len(ufriends2['data'])):
   userlist.append(ufriends2['data'][int(i)])
 # create a list of friend names
-#print(userlist)
 friend_names = [f["user"]["username"] for f in userlist]
-print(friend_names)
 for i in range(0,len(friend_names)):
     e.append(str('https://myanimelist.net/profile/') + str(friend_names[i]))
 
-
-
 class MAL_spider(scrapy.Spider):
     name = 'weebo'
-    mal_login_url = 'https://myanimelist.net/'
+    mal_login_url = 'https://myanimelist.net/login.php'
     start_urls = [mal_login_url]
 
     user_name = AffinityScraperMAL.spiders.credentials.user_name
     password = AffinityScraperMAL.spiders.credentials.password
-    # custom headers
-    headers = {
-        'accept': 'text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8',
-        'accept-encoding': 'gzip, deflate, br',
-        'accept-language': 'fr-FR,fr;q=0.5',
-        'cache-control': 'no-cache',
-        'cookie': 'reviews_sort=recent; search_view2=list; search_sort_anime=score; search_view=list; m_gdpr_mdl_6=1; MALSESSIONID=sprklh2jv21n78rv5mng39vao1; is_logged_in=1; MALHLOGSESSID=4bc6195b0831ebb8ed582dec33d35600; text_ribbon=%5B6%2C7%2C8%5D; clubcomments=a%3A1%3A%7Bi%3A59197%3Bi%3A1673722378%3B%7D',
-        'pragma': 'no-cache',
-        'sec-fetch-dest': 'document',
-        'sec-fetch-mode': 'navigate',
-        'sec-fetch-site': 'none',
-        'sec-fetch-user': '?1',
-        'sec-gpc': '1',
-        'upgrade-insecure-requests': '1',
-        'user-agent': 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/109.0.0.0 Safari/537.36',
-    }
+    chrome_options = Options()
+    #chrome_options.add_argument("--disable-gpu")
+    chrome_options.add_argument("--headless")
+    global driver
+    driver = webdriver.Chrome(options=chrome_options)
+
+    driver.get('https://myanimelist.net/login.php')
+    if("Login" in driver.title):
+        id_box = driver.find_element(By.NAME, 'user_name')
+        id_box.send_keys(user_name)
+        password_box = driver.find_element(By.NAME, 'password')
+        password_box.send_keys(password)
+        login_button = driver.find_element(By.CLASS_NAME, "btn-form-submit")
+        driver.execute_script("arguments[0].click();", login_button)
+        #login_button.click()
+    time.sleep(1)
 
     token = None
 
@@ -83,16 +84,7 @@ class MAL_spider(scrapy.Spider):
 
         return [FormRequest(
                     url = self.mal_login_url,
-                    method = 'POST',
-                    formdata =
-                        {
-                            'user_name':  self.user_name,
-                            'password' :  self.password,
-                            'csrf_token': self.token,
-                            'submit' : '1',
-                            'cookie' : '1'
-                        },
-                    headers = self.headers,
+                    cookies=driver.get_cookies(),
                     callback = self.after_login
                     )]
 
@@ -100,12 +92,9 @@ class MAL_spider(scrapy.Spider):
         for i in range(0,len(e)):
             yield Request(
                 url=e[i],
-                headers=self.headers,
+                cookies=driver.get_cookies(),
                 meta={'Title': friend_names[i]},
                 callback=self.action)
-        #yield Request(
-        #    url='https://randomlogger.ml',
-        #    callback=self.generateimg)
 
     def action(self, response):
         affinity = response.xpath('/html/body/div[1]/div[2]/div[3]/div[2]/div/div[1]/div/div[4]/div[2]/div[2]/span/text()').get()
