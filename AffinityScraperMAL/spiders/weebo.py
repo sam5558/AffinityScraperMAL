@@ -51,37 +51,35 @@ for i in range(0,len(friend_names)):
 
 class MAL_spider(scrapy.Spider):
     name = 'weebo'
-    mal_login_url = 'https://myanimelist.net/login.php'
+    mal_login_url = 'https://myanimelist.net/'
     start_urls = [mal_login_url]
 
     user_name = AffinityScraperMAL.spiders.credentials.user_name
     password = AffinityScraperMAL.spiders.credentials.password
-    chrome_options = Options()
-    #chrome_options.add_argument("--disable-gpu")
-    chrome_options.add_argument("--headless")
-    global driver
-    driver = webdriver.Chrome(options=chrome_options)
-
-    driver.get('https://myanimelist.net/login.php')
-    if("Login" in driver.title):
-        id_box = driver.find_element(By.NAME, 'user_name')
-        id_box.send_keys(user_name)
-        password_box = driver.find_element(By.NAME, 'password')
-        password_box.send_keys(password)
-        login_button = driver.find_element(By.CLASS_NAME, "btn-form-submit")
-        driver.execute_script("arguments[0].click();", login_button)
-        #login_button.click()
-    time.sleep(1)
-
-    token = None
+#    token = None
 
     def parse(self, response):
-        if self.password == '':
-            self.logger.error('first add a pasword')
-            return
-        self.token = response.xpath('//meta[@name="csrf_token"]/@content').extract()
-        self.log('token {}'.format(self.token))
+#        if self.password == '':
+#            self.logger.error('first add a pasword')
+#            return
+#        self.token = response.xpath('//meta[@name="csrf_token"]/@content').extract()
+#        self.log('token {}'.format(self.token))
+        chrome_options = Options()
+        #chrome_options.add_argument("--disable-gpu")
+        chrome_options.add_argument("--headless")
+        global driver
+        driver = webdriver.Chrome(options=chrome_options)
 
+        driver.get('https://myanimelist.net/login.php')
+        if("Login" in driver.title):
+            id_box = driver.find_element(By.NAME, 'user_name')
+            id_box.send_keys(self.user_name)
+            password_box = driver.find_element(By.NAME, 'password')
+            password_box.send_keys(self.password)
+            login_button = driver.find_element(By.CLASS_NAME, "btn-form-submit")
+            driver.execute_script("arguments[0].click();", login_button)
+            #login_button.click()
+        time.sleep(1)
         return [FormRequest(
                     url = self.mal_login_url,
                     cookies=driver.get_cookies(),
@@ -97,16 +95,23 @@ class MAL_spider(scrapy.Spider):
                 callback=self.action)
 
     def action(self, response):
-        affinity = response.xpath('/html/body/div[1]/div[2]/div[3]/div[2]/div/div[1]/div/div[4]/div[2]/div[2]/span/text()').get()
-        affinitymanga = response.xpath('/html/body/div[1]/div[2]/div[3]/div[2]/div/div[1]/div/div[4]/div[4]/div[2]/span/text()').get()
+        #affinity = response.xpath('/html/body/div[1]/div[2]/div[3]/div[2]/div/div[1]/div/div[4]/div[2]/div[2]/span/text()').get()
+        affinity = response.xpath("//div[contains(@class,'bar-outer anime')]/div[contains(@class,'bar-outer-positive al')]/span/text()").get()
+        #affinitymanga = response.xpath('/html/body/div[1]/div[2]/div[3]/div[2]/div/div[1]/div/div[4]/div[4]/div[2]/span/text()').get()
+        affinitymanga = response.xpath("//div[contains(@class,'bar-outer manga')]/div[contains(@class,'bar-outer-positive al')]/span/text()").get()
         pureaff = str(affinity).replace('%','').replace('\xa0\xa0','').replace('None','0')
         pureaffmanga = str(affinitymanga).replace('%','').replace('\xa0\xa0','').replace('None','0')
         pureaff = "{:05.2f}".format(float(pureaff))
         pureaffmanga = "{:05.2f}".format(float(pureaffmanga))
-        #filename = 'output2.log'
-        #f = open(filename, 'a+')
-        #f.write("%s: %s\r\n" %(response.meta['Title'] , pureaff))
-        #f.write("%s: %s\r\n" %(response.meta['Title'] , pureaffmanga))
+        filename = 'output2.log'
+        f = open(filename, 'a+')
+        #print(affinity)
+        #print(type(affinity))
+        #print(pureaff)
+        #print(pureaffmanga)
+        f.write("%s: %s\r\n" %(response.meta['Title'] , pureaff))
+        #print(affinitymanga)
+        f.write("%s: %s\r\n" %(response.meta['Title'] , pureaffmanga))
         results[response.meta['Title']]= pureaff
         resultsmanga[response.meta['Title']]= pureaffmanga
         if len(results) == len(e):
