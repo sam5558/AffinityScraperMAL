@@ -103,15 +103,15 @@ class MAL_spider(scrapy.Spider):
         pureaffmanga = str(affinitymanga).replace('%','').replace('\xa0\xa0','').replace('None','0')
         pureaff = "{:05.2f}".format(float(pureaff))
         pureaffmanga = "{:05.2f}".format(float(pureaffmanga))
-        filename = 'output2.log'
-        f = open(filename, 'a+')
+        #filename = 'output2.log'
+        #f = open(filename, 'a+')
         #print(affinity)
         #print(type(affinity))
         #print(pureaff)
         #print(pureaffmanga)
-        f.write("%s: %s\r\n" %(response.meta['Title'] , pureaff))
+        #f.write("%s: %s\r\n" %(response.meta['Title'] , pureaff))
         #print(affinitymanga)
-        f.write("%s: %s\r\n" %(response.meta['Title'] , pureaffmanga))
+        #f.write("%s: %s\r\n" %(response.meta['Title'] , pureaffmanga))
         results[response.meta['Title']]= pureaff
         resultsmanga[response.meta['Title']]= pureaffmanga
         if len(results) == len(e):
